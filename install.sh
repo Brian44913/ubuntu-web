@@ -22,6 +22,7 @@ REDIS_VERSION="7.2"
 
 # 检查是否提供了 --dbpasswd 参数
 DB_PASSWORD=""
+ARGS=()
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
@@ -30,8 +31,8 @@ while [[ "$#" -gt 0 ]]; do
     shift 2
     ;;
     *)
-    echo "未知参数: $1"
-    exit 1
+    ARGS+=("$1")
+    shift
     ;;
   esac
 done
@@ -68,7 +69,7 @@ check_service_status() {
 
 # 主程序
 main() {
-  if [ $# -eq 0 ]; then
+  if [ ${#ARGS[@]} -eq 0 ]; then
     echo "安装所有组件..."
     install_mysql "$DB_PASSWORD"
     install_php
@@ -76,7 +77,7 @@ main() {
     install_nginx
     install_redis
   else
-    for arg in "$@"; do
+    for arg in "${ARGS[@]}"; do
       case $arg in
         mysql)
           install_mysql "$DB_PASSWORD"
@@ -105,4 +106,4 @@ main() {
   check_service_status
 }
 
-main "$@"
+main

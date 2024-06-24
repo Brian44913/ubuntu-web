@@ -7,7 +7,6 @@
 export DEBIAN_FRONTEND=noninteractive
 
 # include
-. ./include/apache.sh
 . ./include/nginx.sh
 . ./include/mysql.sh
 . ./include/php.sh
@@ -16,14 +15,17 @@ export DEBIAN_FRONTEND=noninteractive
 # 定义版本
 PHP_VERSION="8.3"
 MYSQL_VERSION="8.0"
-APACHE_VERSION="2.4"
 NGINX_VERSION="1.26"
 REDIS_VERSION="7.2"
 
-# 检查是否提供了 --dbpasswd 参数
+# 初始化参数
 DB_PASSWORD=""
-ARGS=()
+INSTALL_COMPONENTS=()
 
+# 生成随机MD5值
+randomCode=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 | md5sum | awk '{print $1}')
+
+# 解析参数
 while [[ "$#" -gt 0 ]]; do
   case $1 in
     --dbpasswd)
@@ -31,13 +33,24 @@ while [[ "$#" -gt 0 ]]; do
     shift 2
     ;;
     *)
-    ARGS+=("$1")
+    IFS=',' read -ra ADDR <<< "$1"
+    for i in "${ADDR[@]}"; do
+      INSTALL_COMPONENTS+=("$i")
+    done
     shift
     ;;
   esac
 done
 
-if [ -z "$DB_PASSWORD" ]; then
+# 如果未指定组件，给出提示
+if [ ${#INSTALL_COMPONENTS[@]} -eq 0 ]; then
+  echo "Usage: $0 [components] [--dbpasswd PASSWORD]"
+  echo "Components: nginx, mysql, php, redis"
+  exit 0
+fi
+
+# 检查是否需要安装 MySQL 且是否提供了 --dbpasswd 参数
+if [[ " ${INSTALL_COMPONENTS[@]} " =~ " mysql " ]] && [ -z "$DB_PASSWORD" ]; then
   echo "错误：必须指定 --dbpasswd 参数，例如 --dbpasswd 123456"
   exit 1
 fi
@@ -55,7 +68,7 @@ id -u www >/dev/null 2>&1 || sudo useradd -M -s /sbin/nologin www
 
 # 检查服务状态
 check_service_status() {
-  services=("mysql" "php${PHP_VERSION}-fpm" "apache2" "nginx" "redis-server")
+  services=("mysql" "php${PHP_VERSION}-fpm" "nginx" "redis-server")
 
   for service in "${services[@]}"; do
     systemctl is-active --quiet ${service}
@@ -69,40 +82,29 @@ check_service_status() {
 
 # 主程序
 main() {
-  if [ ${#ARGS[@]} -eq 0 ]; then
-    echo "安装所有组件..."
-    install_mysql "$DB_PASSWORD"
-    install_php
-    install_apache
-    install_nginx
-    install_redis
-  else
-    for arg in "${ARGS[@]}"; do
-      case $arg in
-        mysql)
-          install_mysql "$DB_PASSWORD"
-          ;;
-        php)
-          install_php
-          ;;
-        apache)
-          install_apache
-          ;;
-        nginx)
-          install_nginx
-          ;;
-        redis)
-          install_redis
-          ;;
-        *)
-          echo "无效的参数: $arg"
-          echo "有效参数: mysql, php, apache, nginx, redis"
-          ;;
-      esac
-    done
-  fi
+  for component in "${INSTALL_COMPONENTS[@]}"; do
+    case $component in
+      mysql)
+        install_mysql "$DB_PASSWORD"
+        ;;
+      php)
+        install_php
+        ;;
+      nginx)
+        install_nginx
+        ;;
+      redis)
+        install_redis
+        ;;
+      *)
+        echo "无效的组件: $component"
+        echo "有效组件: mysql, php, nginx, redis"
+        ;;
+    esac
+  done
 
   echo "所有组件安装和配置完成。"
+  echo "随机生成的MD5值为: $randomCode"
   check_service_status
 }
 

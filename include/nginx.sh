@@ -7,7 +7,7 @@ install_nginx() {
     return
   fi
   
-  if [ ! -f "/etc/nginx/nginx.conf" ]; then
+  if [ -f "/etc/nginx/nginx.conf" ]; then
     echo "/etc/nginx/nginx.conf 文件存在,请确认是否需要备份,如需继续安装,请删除该文件,并再次执行安装命令"
     return
   fi

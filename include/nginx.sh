@@ -18,33 +18,7 @@ install_nginx() {
   sudo apt update
   sudo apt install -y nginx
 
-  # 配置 Nginx
-  sudo tee /etc/nginx/sites-available/default > /dev/null << EOL
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    server_name _;
-
-    root /var/www/html;
-    index index.php index.html index.htm;
-
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
-
-    location ~ \.php\$ {
-        include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/run/php/php${PHP_VERSION}-fpm.sock;
-    }
-
-    location ~ /\.ht {
-        deny all;
-    }
-}
-EOL
-
-  mkdir -p /etc/nginx/vhost /etc/nginx/ssl /data/logs/nginx_access /data/logs/nginx_error /data/wwwroot/default/${randomCode}
+  mkdir -p /etc/nginx/vhost /etc/nginx/ssl /data/logs/nginx_access /data/logs/nginx_error /data/wwwroot/default/phpdir-${randomCode}
   mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.default
   cp config/nginx.conf /etc/nginx/
   sed -i "s|/phpdir/|/phpdir-${randomCode}/|g" /etc/nginx/nginx.conf

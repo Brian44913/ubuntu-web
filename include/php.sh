@@ -27,15 +27,15 @@ pm.min_spare_servers = 2
 pm.max_spare_servers = 6
 EOT
 
-  mkdir -p /data/wwwroot/default/${randomCode}
+  mkdir -p /data/wwwroot/default/phpdir-${randomCode}
   # phpinfo
-  sudo tee /data/wwwroot/default/${randomCode}/phpinfo.php > /dev/null << EOL
+  sudo tee /data/wwwroot/default/phpdir-${randomCode}/phpinfo.php > /dev/null << EOL
 <?php
 phpinfo();
 EOL
 
   # phpmyadmin
-  wget -c https://files.phpmyadmin.net/phpMyAdmin/5.2.1/phpMyAdmin-5.2.1-all-languages.zip -O /tmp/phpMyAdmin.zip && sudo unzip -o /tmp/phpMyAdmin.zip -d /data/wwwroot/default/${randomCode}
+  wget -c https://files.phpmyadmin.net/phpMyAdmin/5.2.1/phpMyAdmin-5.2.1-all-languages.zip -O /tmp/phpMyAdmin.zip && sudo unzip -o /tmp/phpMyAdmin.zip -d /data/wwwroot/default/phpdir-${randomCode}
   sudo systemctl restart php${PHP_VERSION}-fpm
   sudo systemctl enable php${PHP_VERSION}-fpm
 }

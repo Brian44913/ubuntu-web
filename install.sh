@@ -60,7 +60,7 @@ sudo apt update -y
 sudo apt upgrade -y
 
 # 安装必要的依赖
-sudo apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev libssl-dev libxml2-dev libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libfreetype6-dev libonig-dev libzip-dev cmake libncurses5-dev pkg-config wget
+sudo apt install -y build-essential libpcre3 libpcre3-dev zlib1g-dev libssl-dev libxml2-dev libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libfreetype6-dev libonig-dev libzip-dev cmake libncurses5-dev pkg-config wget unzip
 
 # 创建用户和组
 id -u mysql >/dev/null 2>&1 || sudo useradd -M -s /sbin/nologin mysql

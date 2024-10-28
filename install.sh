@@ -15,7 +15,7 @@ export DEBIAN_FRONTEND=noninteractive
 # 定义版本
 PHP_VERSION="8.3"
 MYSQL_VERSION="8.0"
-NGINX_VERSION="1.26"
+NGINX_VERSION="1.26.2"
 REDIS_VERSION="7.2"
 
 # 初始化参数

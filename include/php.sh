@@ -10,7 +10,7 @@ install_php() {
   sudo apt install -y software-properties-common
   sudo add-apt-repository ppa:ondrej/php -y
   sudo apt update
-  sudo apt install -y php${PHP_VERSION} php${PHP_VERSION}-fpm php${PHP_VERSION}-mysql php${PHP_VERSION}-redis php${PHP_VERSION}-fileinfo php${PHP_VERSION}-opcache php${PHP_VERSION}-curl php${PHP_VERSION}-mbstring
+  sudo apt install -y php${PHP_VERSION} php${PHP_VERSION}-fpm php${PHP_VERSION}-mysql php${PHP_VERSION}-redis php${PHP_VERSION}-fileinfo php${PHP_VERSION}-opcache php${PHP_VERSION}-curl php${PHP_VERSION}-mbstring php${PHP_VERSION}-bcmath 
   # sudo apt install -y php${PHP_VERSION}-pgsql
 
   # 配置 PHP-FPM

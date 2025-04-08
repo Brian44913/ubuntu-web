@@ -29,7 +29,7 @@ phpinfo();
 EOL
 
   # phpmyadmin
-  wget -c https://files.phpmyadmin.net/phpMyAdmin/5.2.1/phpMyAdmin-5.2.1-all-languages.zip -O /tmp/phpMyAdmin.zip && sudo unzip -o /tmp/phpMyAdmin.zip -d /data/wwwroot/default/phpdir-${randomCode}
+  wget -c https://files.phpmyadmin.net/phpMyAdmin/5.2.2/phpMyAdmin-5.2.2-all-languages.zip -O /tmp/phpMyAdmin.zip && sudo unzip -o /tmp/phpMyAdmin.zip -d /data/wwwroot/default/phpdir-${randomCode}
   # 生成默认的监听证书,避免默认请求暴露真实域名
   openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /etc/nginx/ssl/dummy.key -out /etc/nginx/ssl/dummy.crt -subj "/CN=localhost"
   

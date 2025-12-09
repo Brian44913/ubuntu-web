@@ -48,3 +48,9 @@ CREATE USER 'root'@'127.0.0.1' IDENTIFIED BY 'your_password';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'127.0.0.1' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 ```
+
+* 修改监听IP (8.4有效,其它未测)
+```
+vi /etc/mysql/mysql.conf.d/mysqld.cnf
+# bind-address = 0.0.0.0
+```

@@ -136,9 +136,15 @@ if [[ -n "${SSL_DOMAIN}" ]]; then
 fi
 
 # --- Summary / 安装总结 ---
+SERVER_IP=$(hostname -I | awk '{print $1}')
 echo ""
 log_info "=========================================="
 log_info "Installation completed!"
-log_info "Random phpdir code: ${RANDOM_CODE}"
 log_info "=========================================="
 check_service_status
+echo ""
+log_info "=========================================="
+log_info "Management URLs (port 8080):"
+log_info "  phpinfo:    http://${SERVER_IP}:8080/phpdir-${RANDOM_CODE}/phpinfo.php"
+log_info "  phpMyAdmin: http://${SERVER_IP}:8080/phpdir-${RANDOM_CODE}/phpmyadmin/"
+log_info "=========================================="

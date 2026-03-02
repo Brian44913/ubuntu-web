@@ -11,7 +11,7 @@ install_mysql() {
     log_step "Installing MySQL ${MYSQL_VERSION} LTS..."
 
     # Add MySQL official APT repository / 添加 MySQL 官方仓库
-    add_gpg_key "https://repo.mysql.com/RPM-GPG-KEY-mysql-2023" "mysql-archive-keyring"
+    add_gpg_key "https://repo.mysql.com/RPM-GPG-KEY-mysql-2025" "mysql-archive-keyring"
     add_apt_repo "mysql" "http://repo.mysql.com/apt/ubuntu noble mysql-8.4-lts" "mysql-archive-keyring"
 
     apt update

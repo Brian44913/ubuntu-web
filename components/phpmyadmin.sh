@@ -24,6 +24,13 @@ install_phpmyadmin() {
     mv /tmp/"${pma_extracted}" "${target_dir}/phpmyadmin"
     rm -f /tmp/phpMyAdmin.zip
 
+    # Generate config with blowfish_secret / 生成配置并设置 blowfish_secret
+    local secret
+    secret=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 32)
+    cp "${target_dir}/phpmyadmin/config.sample.inc.php" "${target_dir}/phpmyadmin/config.inc.php"
+    sed -i "s|\$cfg\['blowfish_secret'\] = ''|\$cfg['blowfish_secret'] = '${secret}'|" \
+        "${target_dir}/phpmyadmin/config.inc.php"
+
     # Create phpinfo page / 创建 phpinfo 页面
     cat > "${target_dir}/phpinfo.php" <<'EOL'
 <?php phpinfo();

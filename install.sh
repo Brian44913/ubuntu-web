@@ -67,8 +67,18 @@ fi
 
 export DB_PASSWORD SSL_EMAIL
 
-# --- Generate random code / 生成随机码 ---
-RANDOM_CODE=$(head -c 100 /dev/urandom | tr -dc a-z0-9 | head -c 32)
+# --- Generate or reuse random code / 生成或复用随机码 ---
+# If Nginx is already installed, reuse existing phpdir code from config
+# 如果 Nginx 已安装，从配置中复用已有的 phpdir 代码
+if [[ -f /etc/nginx/nginx.conf ]]; then
+    EXISTING_CODE=$(grep -oP 'phpdir-\K[a-z0-9]+' /etc/nginx/nginx.conf 2>/dev/null | head -1)
+fi
+if [[ -n "${EXISTING_CODE:-}" ]]; then
+    RANDOM_CODE="${EXISTING_CODE}"
+    log_info "Reusing existing phpdir code: ${RANDOM_CODE}"
+else
+    RANDOM_CODE=$(head -c 100 /dev/urandom | tr -dc a-z0-9 | head -c 32)
+fi
 export RANDOM_CODE
 
 # --- System preparation / 系统准备 ---

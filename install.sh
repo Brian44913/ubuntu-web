@@ -68,7 +68,7 @@ fi
 export DB_PASSWORD SSL_EMAIL
 
 # --- Generate random code / 生成随机码 ---
-RANDOM_CODE=$(tr -dc a-z0-9 < /dev/urandom | head -c 32)
+RANDOM_CODE=$(head -c 100 /dev/urandom | tr -dc a-z0-9 | head -c 32)
 export RANDOM_CODE
 
 # --- System preparation / 系统准备 ---

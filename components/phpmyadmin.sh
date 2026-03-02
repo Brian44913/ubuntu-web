@@ -24,6 +24,10 @@ install_phpmyadmin() {
     mv /tmp/"${pma_extracted}" "${target_dir}/phpmyadmin"
     rm -f /tmp/phpMyAdmin.zip
 
+    # Create tmp directory for template cache / 创建临时目录用于模板缓存
+    mkdir -p "${target_dir}/phpmyadmin/tmp"
+    chmod 777 "${target_dir}/phpmyadmin/tmp"
+
     # Generate config with blowfish_secret / 生成配置并设置 blowfish_secret
     local secret
     secret=$(head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 32)

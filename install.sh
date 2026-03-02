@@ -147,4 +147,8 @@ log_info "=========================================="
 log_info "Management URLs (port 8080):"
 log_info "  phpinfo:    http://${SERVER_IP}:8080/phpdir-${RANDOM_CODE}/phpinfo.php"
 log_info "  phpMyAdmin: http://${SERVER_IP}:8080/phpdir-${RANDOM_CODE}/phpmyadmin/"
+if [[ -n "${DB_PASSWORD}" ]]; then
+    log_info ""
+    log_info "MySQL root password: ${DB_PASSWORD}"
+fi
 log_info "=========================================="

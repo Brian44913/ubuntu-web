@@ -1,10 +1,10 @@
 # ubuntu-web
 
-One-click installation of Nginx + PHP + MySQL + Redis web environment for **Ubuntu 24.04 LTS**.
+适用于 **Ubuntu 24.04 LTS** 的 Nginx + PHP + MySQL + Redis Web 环境一键安装脚本。
 
-All components installed via official APT repositories.
+所有组件均通过官方 APT 仓库安装。
 
-## Quick Start
+## 快速开始
 
 ```bash
 git clone https://github.com/Brian44913/ubuntu-web && \
@@ -12,161 +12,161 @@ cd ubuntu-web && \
 bash install.sh nginx,php,mysql,redis --dbpasswd YourSecurePassword
 ```
 
-## Components & Versions
+## 组件与版本
 
-| Component | Version | Source |
-|-----------|---------|--------|
-| Nginx | 1.28.x | nginx.org official repo |
+| 组件 | 版本 | 安装源 |
+|------|------|--------|
+| Nginx | 1.28.x | nginx.org 官方仓库 |
 | PHP | 8.4 | Ondrej PPA |
-| MySQL | 8.4 LTS | MySQL official repo |
-| Redis | 8.6 | redis.io official repo |
+| MySQL | 8.4 LTS | MySQL 官方仓库 |
+| Redis | 8.6 | redis.io 官方仓库 |
 | phpMyAdmin | 5.2.3 | phpmyadmin.net |
-| acme.sh | latest | get.acme.sh |
+| acme.sh | 最新版 | get.acme.sh |
 
-## Installation
+## 安装
 
 ```bash
-# Full stack / 全栈安装
+# 全栈安装
 bash install.sh nginx,php,mysql,redis --dbpasswd YourSecurePassword
 
-# With phpMyAdmin / 包含 phpMyAdmin
+# 包含 phpMyAdmin
 bash install.sh nginx,php,mysql,redis,phpmyadmin --dbpasswd YourSecurePassword
 
-# With SSL / 包含 SSL 证书
+# 包含 SSL 证书
 bash install.sh nginx,php,mysql,redis,acme --dbpasswd YourSecurePassword --ssl example.com --email admin@example.com
 
-# Single component / 单组件安装
+# 单组件安装
 bash install.sh redis
 ```
 
-### Available Components
+### 可用组件
 
-- `nginx` - Nginx web server
-- `php` - PHP 8.4 with FPM and common extensions
-- `mysql` - MySQL 8.4 LTS (requires `--dbpasswd`)
-- `redis` - Redis server
-- `phpmyadmin` - phpMyAdmin web interface
-- `acme` - acme.sh SSL client
+- `nginx` — Nginx Web 服务器
+- `php` — PHP 8.4（含 FPM 及常用扩展）
+- `mysql` — MySQL 8.4 LTS（需指定 `--dbpasswd`）
+- `redis` — Redis 服务器
+- `phpmyadmin` — phpMyAdmin 数据库管理界面
+- `acme` — acme.sh SSL 证书客户端
 
-### Options
+### 参数说明
 
-| Option | Description |
-|--------|-------------|
-| `--dbpasswd PASSWORD` | MySQL root password (required when installing mysql) |
-| `--ssl DOMAIN` | Setup SSL certificate for domain after installation |
-| `--email EMAIL` | Email for SSL certificate registration |
-| `-h, --help` | Show help message |
+| 参数 | 说明 |
+|------|------|
+| `--dbpasswd PASSWORD` | MySQL root 密码（安装 mysql 时必填） |
+| `--ssl DOMAIN` | 安装完成后自动为指定域名申请 SSL 证书 |
+| `--email EMAIL` | SSL 证书注册邮箱 |
+| `-h, --help` | 显示帮助信息 |
 
-## Uninstallation
+## 卸载
 
 ```bash
-# Uninstall specific components / 卸载指定组件
+# 卸载指定组件
 bash uninstall.sh nginx,php
 
-# Uninstall everything / 卸载全部
+# 卸载全部
 bash uninstall.sh --all
 ```
 
-> **Note:** Data directories (`/data/wwwroot/`, `/var/lib/mysql`) are NOT automatically removed during uninstallation to prevent data loss.
+> **注意：** 卸载时不会自动删除数据目录（`/data/wwwroot/`、`/var/lib/mysql`），以防止数据丢失。如不再需要，请手动删除。
 
-## SSL Certificate (acme.sh)
+## SSL 证书（acme.sh）
 
-After installing with `acme` component, you can setup SSL for additional domains:
+安装 `acme` 组件后，可以为其他域名申请 SSL 证书：
 
 ```bash
-# In install.sh, source the components first, then:
+# 先加载组件脚本
 source lib/common.sh && source lib/repo.sh && source components/acme.sh
 export SCRIPT_DIR="$(pwd)" PHP_VERSION="8.4"
 setup_ssl yourdomain.com your@email.com
 ```
 
-acme.sh handles automatic certificate renewal via cron.
+acme.sh 会自动通过 cron 定时续期证书。
 
-## Configuration Files
+## 配置文件路径
 
 #### Nginx
 ```
-/etc/nginx/nginx.conf          # Main config
-/etc/nginx/vhost/*.conf         # Virtual hosts
-/etc/nginx/ssl/                 # SSL certificates
+/etc/nginx/nginx.conf          # 主配置
+/etc/nginx/vhost/*.conf         # 虚拟主机
+/etc/nginx/ssl/                 # SSL 证书
 
 systemctl restart nginx
 ```
 
 #### PHP
 ```
-/etc/php/8.4/fpm/php.ini       # PHP config
-/etc/php/8.4/fpm/pool.d/       # FPM pool config
+/etc/php/8.4/fpm/php.ini       # PHP 配置
+/etc/php/8.4/fpm/pool.d/       # FPM 进程池配置
 
 systemctl restart php8.4-fpm
 ```
 
 #### MySQL
 ```
-/etc/mysql/mysql.conf.d/mysqld.cnf   # Main config
+/etc/mysql/mysql.conf.d/mysqld.cnf   # 主配置
 
 systemctl restart mysql
 ```
 
 #### Redis
 ```
-/etc/redis/redis.conf           # Main config
+/etc/redis/redis.conf           # 主配置
 
 systemctl restart redis-server
 ```
 
-## MySQL Notes
+## MySQL 说明
 
-MySQL 8.4 LTS uses `caching_sha2_password` as the default (and only) authentication plugin. `mysql_native_password` is no longer available.
+MySQL 8.4 LTS 默认且唯一使用 `caching_sha2_password` 认证插件，`mysql_native_password` 已不可用。
 
-- Change root password:
+- 修改 root 密码：
 ```sql
 ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';
 FLUSH PRIVILEGES;
 ```
 
-- Create root@127.0.0.1:
+- 创建 root@127.0.0.1：
 ```sql
 CREATE USER 'root'@'127.0.0.1' IDENTIFIED BY 'your_password';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'127.0.0.1' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 ```
 
-- Change bind address:
+- 修改监听地址（默认仅监听 127.0.0.1）：
 ```
 vi /etc/mysql/mysql.conf.d/mysqld.cnf
-# bind-address = 0.0.0.0
+# 将 bind-address = 127.0.0.1 改为 bind-address = 0.0.0.0
 ```
 
-## Project Structure
+## 项目结构
 
 ```
 ubuntu-web/
-├── install.sh              # Installation entry point
-├── uninstall.sh            # Uninstallation entry point
+├── install.sh              # 安装入口
+├── uninstall.sh            # 卸载入口
 ├── lib/
-│   ├── common.sh           # Logging, error handling, service management
-│   ├── os.sh               # OS detection (Ubuntu 24.04)
-│   └── repo.sh             # APT repository management (signed-by)
+│   ├── common.sh           # 日志、错误处理、服务管理
+│   ├── os.sh               # 操作系统检测（Ubuntu 24.04）
+│   └── repo.sh             # APT 仓库管理（signed-by 方式）
 ├── components/
-│   ├── nginx.sh            # Nginx install/uninstall
-│   ├── php.sh              # PHP install/uninstall
-│   ├── mysql.sh            # MySQL install/uninstall
-│   ├── redis.sh            # Redis install/uninstall
-│   ├── phpmyadmin.sh       # phpMyAdmin install/uninstall
-│   └── acme.sh             # acme.sh SSL install/uninstall
+│   ├── nginx.sh            # Nginx 安装/卸载
+│   ├── php.sh              # PHP 安装/卸载
+│   ├── mysql.sh            # MySQL 安装/卸载
+│   ├── redis.sh            # Redis 安装/卸载
+│   ├── phpmyadmin.sh       # phpMyAdmin 安装/卸载
+│   └── acme.sh             # acme.sh SSL 安装/卸载
 └── config/
-    ├── nginx.conf           # Nginx configuration template
-    ├── nginx-ssl-vhost.conf # SSL virtual host template
-    └── mysql.cnf            # MySQL 8.4 configuration
+    ├── nginx.conf           # Nginx 配置模板
+    ├── nginx-ssl-vhost.conf # SSL 虚拟主机模板
+    └── mysql.cnf            # MySQL 8.4 配置
 ```
 
-## Requirements
+## 系统要求
 
-- Ubuntu 24.04 LTS (fresh installation recommended)
-- Root access
-- Internet connection
+- Ubuntu 24.04 LTS（建议全新安装）
+- Root 权限
+- 网络连接
 
-## License
+## 许可证
 
 MIT

@@ -22,12 +22,14 @@ install_mysql() {
 
     systemctl restart mysql
 
-    # Set root password (MySQL 8.4 uses caching_sha2_password by default)
-    # 设置 root 密码（MySQL 8.4 默认使用 caching_sha2_password）
+    # Set root password with caching_sha2_password authentication
+    # APT package sets auth_socket by default; explicitly switch to password auth
+    # 设置 root 密码并切换为 caching_sha2_password 认证
+    # APT 包默认使用 auth_socket，需显式切换为密码认证
     # Escape single quotes in password to prevent SQL injection
     # 转义密码中的单引号，防止 SQL 注入
     local escaped_password="${DB_PASSWORD//\'/\'\'}"
-    mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${escaped_password}';"
+    mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '${escaped_password}';"
 
     service_enable_start mysql
     log_info "MySQL ${MYSQL_VERSION} LTS installed successfully"
